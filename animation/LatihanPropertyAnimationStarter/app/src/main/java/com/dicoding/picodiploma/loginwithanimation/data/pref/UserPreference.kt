@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.loginwithanimation.data.pref
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -29,6 +30,13 @@ class UserPreference private constructor(private val dataStore: DataStore<Prefer
                 preferences[TOKEN_KEY] ?: "",
                 preferences[IS_LOGIN_KEY] ?: false
             )
+        }
+    }
+
+    suspend fun login(currentUserToken: String) {
+        dataStore.edit { preferences ->
+            preferences[TOKEN_KEY] = currentUserToken
+            Log.d("DataStore", "User Token: $currentUserToken")
         }
     }
 

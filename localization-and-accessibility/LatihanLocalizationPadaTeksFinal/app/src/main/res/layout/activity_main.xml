@@ -45,7 +45,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/space4"
         app:layout_constraintTop_toTopOf="@+id/ratingImageView"
-        app:srcCompat="@drawable/ic_baseline_shoe" />
+        app:srcCompat="@drawable/ic_baseline_shoe"
+        android:contentDescription="TODO" />
 
     <View
         android:id="@+id/view"

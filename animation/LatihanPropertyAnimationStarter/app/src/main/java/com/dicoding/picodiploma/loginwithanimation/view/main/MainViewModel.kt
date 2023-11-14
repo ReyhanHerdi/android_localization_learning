@@ -19,4 +19,9 @@ class MainViewModel(private val repository: UserRepository) : ViewModel() {
         }
     }
 
+    suspend fun getToken(): String {
+        return repository.getToken()
+    }
+
+    suspend fun getStoryList() = repository.showStoryList()
 }

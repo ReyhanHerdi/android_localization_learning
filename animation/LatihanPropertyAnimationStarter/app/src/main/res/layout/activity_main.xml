@@ -4,79 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".view.main.MainActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineHorizontal"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/storyList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mapsButton"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@id/uploadImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.1"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:src="@drawable/baseline_map_24"
+        android:contentDescription="@string/maps_button" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineHorizontal3"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/uploadImage"
         android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintGuide_percent="0.31"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:lines="1"
-        android:maxLines="1"
-        android:text=""
-        android:textColor="@color/black"
-        android:textSize="34sp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@id/logoutButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal3" />
+        android:src="@drawable/baseline_add_a_photo_24"
+        android:contentDescription="@string/upload" />
 
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/message_main_page"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:src="@drawable/image_dicoding"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
-
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/logoutButton"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/navy"
-        android:text="@string/logout"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/messageTextView" />
+        android:src="@drawable/baseline_logout_24"
+        android:contentDescription="@string/logout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

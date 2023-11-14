@@ -31,6 +31,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
 
     <TextView
@@ -46,6 +48,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
     <Button
@@ -59,6 +63,8 @@
         android:text="@string/login"
         app:layout_constraintEnd_toStartOf="@+id/guidelineVertical"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/descTextView" />
 
     <Button
@@ -72,6 +78,8 @@
         android:text="@string/signup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/descTextView" />
 
     <androidx.constraintlayout.widget.Guideline

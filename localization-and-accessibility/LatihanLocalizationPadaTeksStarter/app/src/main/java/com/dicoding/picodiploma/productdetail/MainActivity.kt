@@ -1,17 +1,32 @@
 package com.dicoding.picodiploma.productdetail
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.dicoding.picodiploma.productdetail.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupView()
+        setUpAction()
+        setupData()
+    }
+
+    private fun setUpAction() {
+        binding.settingImageView.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+        }
     }
 
     private fun setupView() {
@@ -25,5 +40,41 @@ class MainActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+    }
+
+    private fun setupData() {
+        val data = RemoteDataSource(this)
+        val product = data.getDetailProduct()
+
+        product.apply {
+            binding.apply {
+                previewImageView.setImageResource(image)
+                nameTextView.text = name
+                storeTextView.text = store
+                colorTextView.text = color
+                sizeTextView.text = size
+                descTextView.text = desc
+                priceTextView.text = price
+                dateTextView.text = getString(R.string.dateFormat, date)
+                ratingTextView.text = getString(R.string.ratingFormat, rating, countRating)
+            }
+        }
+
+        setUpAccesibility(product)
+    }
+
+    private fun setUpAccesibility(productModel: ProductModel) {
+        productModel.apply {
+            binding.apply {
+                settingImageView.contentDescription = getString(R.string.settingDescription)
+                previewImageView.contentDescription = getString(R.string.previewDescription)
+                colorTextView.contentDescription = getString(R.string.colorDescription, color)
+                sizeTextView.contentDescription = getString(R.string.sizeDescription, size)
+                ratingTextView.contentDescription = getString(
+                    R.string.ratingDescription
+                )
+                storeTextView.contentDescription = getString(R.string.storeDescription, store)
+            }
+        }
     }
 }

@@ -1,17 +1,24 @@
 package com.dicoding.picodiploma.loginwithanimation.view.login
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityLoginBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private val viewModel by viewModels<LoginViewModel> {
@@ -26,6 +33,33 @@ class LoginActivity : AppCompatActivity() {
 
         setupView()
         setupAction()
+        playAnimation()
+
+    }
+
+    private fun playAnimation() {
+        ObjectAnimator.ofFloat(binding.imageView, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+
+        val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(100)
+        val message = ObjectAnimator.ofFloat(binding.messageTextView, View.ALPHA, 1f).setDuration(100)
+        val email = ObjectAnimator.ofFloat(binding.emailTextView, View.ALPHA, 1f).setDuration(100)
+        val emailEdit = ObjectAnimator.ofFloat(binding.emailEditTextLayout, View.ALPHA, 1f).setDuration(100)
+        val password = ObjectAnimator.ofFloat(binding.passwordTextView, View.ALPHA, 1f).setDuration(100)
+        val passwordEdit = ObjectAnimator.ofFloat(binding.passwordEditTextLayout, View.ALPHA, 1f).setDuration(100)
+        val login = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
+
+        val together = AnimatorSet().apply {
+            playTogether(login)
+        }
+
+        AnimatorSet().apply {
+            playSequentially(title, message, email, emailEdit, password, passwordEdit, together)
+            start()
+        }
     }
 
     private fun setupView() {
@@ -42,22 +76,59 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
+
         binding.loginButton.setOnClickListener {
+
             val email = binding.emailEditText.text.toString()
+            val password = binding.passwordEditText.text.toString()
+
             viewModel.saveSession(UserModel(email, "sample_token"))
-            AlertDialog.Builder(this).apply {
-                setTitle("Yeah!")
-                setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
-                setPositiveButton("Lanjut") { _, _ ->
-                    val intent = Intent(context, MainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
-                    finish()
+
+            lifecycleScope.launch {
+                viewModel.loginUser(email, password)
+            }
+            showLoading(true)
+
+        }
+
+        val observeLogin = Observer<Boolean?> {status ->
+            if (!isFinishing && !isDestroyed) {
+                if (status == true) {
+                    AlertDialog.Builder(this).apply {
+                        setTitle("Yeah!")
+                        setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
+                        setPositiveButton("Lanjut") { _, _ ->
+                            val intent = Intent(context, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            finish()
+                            showLoading(false)
+                        }
+                        create()
+                        show()
+                    }
+                } else if (status == false) {
+                    AlertDialog.Builder(this).apply {
+                        setTitle("Login Gagal!")
+                        setMessage("Periksa email dan password anda")
+                        create()
+                        show()
+                    }
+                    showLoading(false)
+                } else {
+                    // Do nothing
                 }
-                create()
-                show()
+            } else {
+                Log.d("INI", "ini error")
             }
         }
+
+        viewModel.liveDataStatus.observeForever(observeLogin)
+
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
 }

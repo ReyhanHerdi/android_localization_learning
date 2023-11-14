@@ -32,6 +32,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
 
     <TextView
@@ -43,6 +45,8 @@
         android:text="@string/name"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,6 +59,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameTextView"
+        android:alpha="0"
+        tools:alpha="100"
         app:startIconDrawable="@drawable/ic_baseline_person_24">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -74,6 +80,8 @@
         android:text="@string/email"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/nameEditTextLayout" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -86,6 +94,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailTextView"
+        android:alpha="0"
+        tools:alpha="100"
         app:startIconDrawable="@drawable/ic_baseline_email_24">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -105,41 +115,32 @@
         android:text="@string/password"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/emailEditTextLayout" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.dicoding.picodiploma.loginwithanimation.view.customView.EditText
+        style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
         android:id="@+id/passwordEditTextLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextView"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24">
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextView"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
+    <com.dicoding.picodiploma.loginwithanimation.view.customView.CustomButton
         android:id="@+id/signupButton"
         android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/navy"
-        android:text="@string/signup"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:layout_margin="32dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditTextLayout" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordEditTextLayout"/>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineHorizontal"
@@ -156,5 +157,17 @@
         android:layout_height="64dp"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/loading"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
