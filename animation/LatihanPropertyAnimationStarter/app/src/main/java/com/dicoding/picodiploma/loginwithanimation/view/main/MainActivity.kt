@@ -83,37 +83,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         })
-
-        /*
-
-        val storiesAdapter = ListStoryListAdapter()
-
-        viewModel.getStoryList().observe(this, Observer { result ->
-            if (result != null) {
-                when(result) {
-                    is Result.Loading -> {
-                        Log.d("Progres", "Masih loading")
-                    }
-                    is Result.Success -> {
-                        val storiesData = result.data
-                        storiesAdapter.submitList(storiesData)
-                    }
-                    is Result.Error -> {
-                        Toast.makeText(this@MainActivity, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        })
-
-        binding.storyList.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = storiesAdapter
-        }
-
-
-
-         */
     }
 
     private suspend fun getStoryDetail(listStoryItem: ListStoryItem, actionCompat: Bundle?) {

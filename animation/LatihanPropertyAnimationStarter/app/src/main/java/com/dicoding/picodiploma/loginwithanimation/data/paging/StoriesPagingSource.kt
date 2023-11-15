@@ -3,16 +3,8 @@ package com.dicoding.picodiploma.loginwithanimation.data.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.dicoding.picodiploma.loginwithanimation.data.api.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
-import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
-import com.dicoding.picodiploma.loginwithanimation.data.local.room.StoryListDao
-import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
-import kotlinx.coroutines.flow.first
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class StoriesPagingSource(private val apiService: ApiService) : PagingSource<Int, ListStoryItem>() {
 

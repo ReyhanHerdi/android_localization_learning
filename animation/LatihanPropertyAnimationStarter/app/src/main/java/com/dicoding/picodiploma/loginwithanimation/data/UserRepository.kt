@@ -15,14 +15,11 @@ import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryResponse
 import com.dicoding.picodiploma.loginwithanimation.data.api.LoginResponse
 import com.dicoding.picodiploma.loginwithanimation.data.api.RegisterResponse
-import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
-import com.dicoding.picodiploma.loginwithanimation.data.local.room.StoryListDao
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
 import com.dicoding.picodiploma.loginwithanimation.utils.AppExecutors
 import com.dicoding.picodiploma.loginwithanimation.data.api.UploadNewStoryResponse
 import com.dicoding.picodiploma.loginwithanimation.data.local.room.StoryListRoomDatabase
-import com.dicoding.picodiploma.loginwithanimation.data.paging.StoriesPagingSource
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
@@ -40,7 +37,6 @@ import okhttp3.RequestBody
 class UserRepository private constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService,
-    private val storyListDao: StoryListDao,
     private val appExecutors: AppExecutors,
     private val storyListRoomDatabase: StoryListRoomDatabase,
     val liveData: MutableLiveData<Boolean?>
@@ -142,52 +138,6 @@ class UserRepository private constructor(
         userPreference.logout()
     }
 
-    /*
-    suspend fun showStoryList(): LiveData<Result<List<StoryListEntity>>> {
-        val result = MediatorLiveData<Result<List<StoryListEntity>>>()
-        result.value = Result.Loading
-        val userToken = userPreference.getSession().first().token
-        Log.d("User tonek", userToken)
-        val client = ApiConfig.getApiService(userToken).getStories()
-        client.enqueue(object : Callback<ListStoryResponse> {
-            override fun onResponse(
-                call: Call<ListStoryResponse>,
-                response: Response<ListStoryResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val story = response.body()?.listStory
-                    val storyList = ArrayList<StoryListEntity>()
-
-                    appExecutors.diskIO.execute {
-                        story?.forEach { story ->
-                            val stories = StoryListEntity(
-                                story?.id.toString(),
-                                story?.name.toString(),
-                                story?.description.toString(),
-                                story?.photoUrl.toString(),
-                                story?.createdAt.toString()
-                            )
-                            storyList.add(stories)
-                        }
-                        storyListDao.insertStory(storyList)
-                    }
-                    val localData = storyListDao.getAllStory()
-                    result.addSource(localData) { storyData: List<StoryListEntity> ->
-                        result.value = Result.Success(storyData)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<ListStoryResponse>, t: Throwable) {
-                result.value = Result.Error(t.message.toString())
-            }
-
-        })
-        return result
-    }
-
-     */
-
     fun getStories(): LiveData<PagingData<ListStoryItem>> {
         @OptIn(ExperimentalPagingApi::class)
         return Pager(
@@ -196,7 +146,6 @@ class UserRepository private constructor(
             ),
             remoteMediator = StoriesRemoteMediator(storyListRoomDatabase, apiService, appExecutors),
             pagingSourceFactory = {
-                //StoriesPagingSource(apiService)
                 storyListRoomDatabase.storyListDao().getAllStory()
             }
         ).liveData
@@ -277,13 +226,12 @@ class UserRepository private constructor(
         fun getInstance(
             userPreference: UserPreference,
             apiService: ApiService,
-            storyListDao: StoryListDao,
             appExecutors: AppExecutors,
             storyListRoomDatabase: StoryListRoomDatabase,
             liveData: MutableLiveData<Boolean?>
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, apiService, storyListDao, appExecutors, storyListRoomDatabase, liveData)
+                instance ?: UserRepository(userPreference, apiService, appExecutors, storyListRoomDatabase, liveData)
             }.also { instance = it }
     }
 }

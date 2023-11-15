@@ -18,8 +18,7 @@ object Injection {
         val apiService = ApiConfig.getApiService(user.token)
         val liveData = MutableLiveData<Boolean?>()
         val database = StoryListRoomDatabase.getDatabase(context)
-        val dao = database.storyListDao()
         val appExecutors = AppExecutors()
-        return UserRepository.getInstance(pref, apiService, dao, appExecutors, database, liveData)
+        return UserRepository.getInstance(pref, apiService, appExecutors, database, liveData)
     }
 }
