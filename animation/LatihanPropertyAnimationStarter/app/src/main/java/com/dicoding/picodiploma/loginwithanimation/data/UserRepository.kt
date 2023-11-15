@@ -4,8 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.dicoding.picodiploma.loginwithanimation.data.api.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.api.ApiService
+import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryResponse
 import com.dicoding.picodiploma.loginwithanimation.data.api.LoginResponse
 import com.dicoding.picodiploma.loginwithanimation.data.api.RegisterResponse
@@ -15,6 +21,8 @@ import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
 import com.dicoding.picodiploma.loginwithanimation.utils.AppExecutors
 import com.dicoding.picodiploma.loginwithanimation.data.api.UploadNewStoryResponse
+import com.dicoding.picodiploma.loginwithanimation.data.local.room.StoryListRoomDatabase
+import com.dicoding.picodiploma.loginwithanimation.data.paging.StoriesPagingSource
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
@@ -34,6 +42,7 @@ class UserRepository private constructor(
     private val apiService: ApiService,
     private val storyListDao: StoryListDao,
     private val appExecutors: AppExecutors,
+    private val storyListRoomDatabase: StoryListRoomDatabase,
     val liveData: MutableLiveData<Boolean?>
 ) {
     suspend fun saveSession(user: UserModel) {
@@ -133,7 +142,7 @@ class UserRepository private constructor(
         userPreference.logout()
     }
 
-
+    /*
     suspend fun showStoryList(): LiveData<Result<List<StoryListEntity>>> {
         val result = MediatorLiveData<Result<List<StoryListEntity>>>()
         result.value = Result.Loading
@@ -175,6 +184,22 @@ class UserRepository private constructor(
 
         })
         return result
+    }
+
+     */
+
+    fun getStories(): LiveData<PagingData<ListStoryItem>> {
+        @OptIn(ExperimentalPagingApi::class)
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            remoteMediator = StoriesRemoteMediator(storyListRoomDatabase, apiService, appExecutors),
+            pagingSourceFactory = {
+                //StoriesPagingSource(apiService)
+                storyListRoomDatabase.storyListDao().getAllStory()
+            }
+        ).liveData
     }
 
     suspend fun uploadStory(multipartBody: MultipartBody.Part, requestBody: RequestBody): LiveData<Result<Boolean>> {
@@ -254,10 +279,11 @@ class UserRepository private constructor(
             apiService: ApiService,
             storyListDao: StoryListDao,
             appExecutors: AppExecutors,
+            storyListRoomDatabase: StoryListRoomDatabase,
             liveData: MutableLiveData<Boolean?>
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, apiService, storyListDao, appExecutors, liveData)
+                instance ?: UserRepository(userPreference, apiService, storyListDao, appExecutors, storyListRoomDatabase, liveData)
             }.also { instance = it }
     }
 }

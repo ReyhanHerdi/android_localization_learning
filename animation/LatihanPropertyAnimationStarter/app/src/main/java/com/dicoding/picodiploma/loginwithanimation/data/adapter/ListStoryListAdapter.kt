@@ -7,21 +7,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
+import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.databinding.StoryListBinding
 
-class ListStoryListAdapter : ListAdapter<StoryListEntity, ListStoryListAdapter.MyViewHolder>(
+class ListStoryListAdapter : PagingDataAdapter<ListStoryItem, ListStoryListAdapter.MyViewHolder>(
     DIFF_CALLBACK
 ) {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: StoryListEntity, actionCompat: Bundle?)
+        fun onItemClicked(data: ListStoryItem, actionCompat: Bundle?)
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
@@ -34,7 +34,7 @@ class ListStoryListAdapter : ListAdapter<StoryListEntity, ListStoryListAdapter.M
         var storyTitle = binding.storyTitle
         var storyCaption = binding.storyCaption
 
-        fun bind(storyList: StoryListEntity) {
+        fun bind(storyList: ListStoryItem) {
             Glide.with(itemView.context)
                 .load(storyList.photoUrl)
                 .into(storyImage)
@@ -52,7 +52,9 @@ class ListStoryListAdapter : ListAdapter<StoryListEntity, ListStoryListAdapter.M
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val storyList = getItem(position)
-        holder.bind(storyList)
+        if (storyList != null) {
+            holder.bind(storyList)
+        }
 
         holder.itemView.setOnClickListener {
             val optionCompat: ActivityOptionsCompat =
@@ -62,21 +64,23 @@ class ListStoryListAdapter : ListAdapter<StoryListEntity, ListStoryListAdapter.M
                     Pair(holder.storyTitle, "storyTitle"),
                     Pair(holder.storyCaption, "storyCaption")
                 )
-            onItemClickCallback.onItemClicked(storyList, optionCompat.toBundle())
+            if (storyList != null) {
+                onItemClickCallback.onItemClicked(storyList, optionCompat.toBundle())
+            }
 
         }
 
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryListEntity>() {
-            override fun areItemsTheSame(oldItem: StoryListEntity, newItem: StoryListEntity): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+            override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem == newItem
             }
 
             override fun areContentsTheSame(
-                oldItem: StoryListEntity,
-                newItem: StoryListEntity
+                oldItem: ListStoryItem,
+                newItem: ListStoryItem
             ): Boolean {
                 return oldItem == newItem
             }

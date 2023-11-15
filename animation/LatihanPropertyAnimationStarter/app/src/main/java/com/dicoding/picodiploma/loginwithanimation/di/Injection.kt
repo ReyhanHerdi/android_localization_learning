@@ -20,6 +20,6 @@ object Injection {
         val database = StoryListRoomDatabase.getDatabase(context)
         val dao = database.storyListDao()
         val appExecutors = AppExecutors()
-        return UserRepository.getInstance(pref, apiService, dao, appExecutors, liveData)
+        return UserRepository.getInstance(pref, apiService, dao, appExecutors, database, liveData)
     }
 }

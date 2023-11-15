@@ -18,6 +18,8 @@ import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEn
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.data.adapter.ListStoryListAdapter
+import com.dicoding.picodiploma.loginwithanimation.data.adapter.LoadingStateAdapter
+import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.view.maps.MapsActivity
 import com.dicoding.picodiploma.loginwithanimation.view.storyDetail.StoryDetailActivity
 import com.dicoding.picodiploma.loginwithanimation.view.upload.UploadActivity
@@ -44,9 +46,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         setupView()
 
-        lifecycleScope.launch {
-            setAdapter()
-        }
+        binding.storyList.layoutManager = LinearLayoutManager(this)
+        setAdapter()
+
         setupAction()
 
         binding.uploadImage.setOnClickListener(this)
@@ -66,7 +68,28 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.hide()
     }
 
-    private suspend fun setAdapter() {
+    private fun setAdapter() {
+        val storiesAdapter = ListStoryListAdapter()
+        binding.storyList.adapter = storiesAdapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                storiesAdapter.retry()
+            }
+        )
+        viewModel.quote.observe(this) {
+            storiesAdapter.submitData(lifecycle, it)
+        }
+
+        storiesAdapter.setOnItemClickCallback(object : ListStoryListAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: ListStoryItem, actionCompat: Bundle?) {
+                lifecycleScope.launch {
+                    getStoryDetail(data, actionCompat)
+                }
+            }
+
+        })
+
+        /*
+
         val storiesAdapter = ListStoryListAdapter()
 
         viewModel.getStoryList().observe(this, Observer { result ->
@@ -92,26 +115,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             adapter = storiesAdapter
         }
 
-        storiesAdapter.setOnItemClickCallback(object : ListStoryListAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: StoryListEntity, actionCompat: Bundle?) {
-                lifecycleScope.launch {
-                    getStoryDetail(data, actionCompat)
-                }
-            }
 
-        })
+
+         */
     }
 
-    private suspend fun getStoryDetail(storyListEntity: StoryListEntity, actionCompat: Bundle?) {
+    private suspend fun getStoryDetail(listStoryItem: ListStoryItem, actionCompat: Bundle?) {
         val token = viewModel.getToken()
         Log.d("token in activ", token)
         val intent = Intent(this@MainActivity, StoryDetailActivity::class.java)
-        intent.putExtra(StoryDetailActivity.ID_STORY, storyListEntity.id)
+        intent.putExtra(StoryDetailActivity.ID_STORY, listStoryItem.id)
         intent.putExtra(StoryDetailActivity.TOKEN, token)
-        intent.putExtra(StoryDetailActivity.NAME, storyListEntity.name)
-        intent.putExtra(StoryDetailActivity.DESCRIPTION, storyListEntity.description)
-        intent.putExtra(StoryDetailActivity.DATE_ADDED, storyListEntity.createdAt)
-        intent.putExtra(StoryDetailActivity.IMAGE, storyListEntity.photoUrl)
+        intent.putExtra(StoryDetailActivity.NAME, listStoryItem.name)
+        intent.putExtra(StoryDetailActivity.DESCRIPTION, listStoryItem.description)
+        intent.putExtra(StoryDetailActivity.DATE_ADDED, listStoryItem.createdAt)
+        intent.putExtra(StoryDetailActivity.IMAGE, listStoryItem.photoUrl)
         startActivity(intent, actionCompat)
     }
 

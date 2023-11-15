@@ -1,12 +1,14 @@
 package com.dicoding.picodiploma.loginwithanimation.data.local.room
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
 
 @Dao
@@ -21,5 +23,8 @@ interface StoryListDao {
     fun deleteStory(story: List<StoryListEntity>)
 
     @Query("SELECT * FROM story ORDER BY createdAt DESC")
-    fun getAllStory(): LiveData<List<StoryListEntity>>
+    fun getAllStory(): PagingSource<Int, ListStoryItem>
+
+    @Query("DELETE FROM story")
+    suspend fun deleteAll()
 }

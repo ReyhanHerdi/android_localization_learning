@@ -26,5 +26,7 @@
     <string name="loading">loading</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="maps_button">maps button</string>
+    <string name="coba_lagi">Coba lagi</string>
+    <string name="gagal_memuat_data">Gagal memuat data</string>
 
 </resources>
