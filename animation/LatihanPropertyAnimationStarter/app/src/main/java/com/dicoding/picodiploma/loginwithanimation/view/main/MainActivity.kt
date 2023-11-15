@@ -7,14 +7,10 @@ import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.picodiploma.loginwithanimation.data.Result
-import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.data.adapter.ListStoryListAdapter
@@ -75,7 +71,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 storiesAdapter.retry()
             }
         )
-        viewModel.quote.observe(this) {
+        viewModel.story.observe(this) {
             storiesAdapter.submitData(lifecycle, it)
         }
 

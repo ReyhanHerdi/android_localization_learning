@@ -89,8 +89,8 @@ class SignupActivity : AppCompatActivity() {
             if (nama.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                 if (password.length >= 8) {
                     AlertDialog.Builder(this).apply {
-                        setTitle("Yeah!")
-                        setMessage("Akun dengan $email sudah jadi nih. Yuk, login dan belajar coding.")
+                        setTitle("Pendaftaran Berhasil")
+                        setMessage("Silahkan login dengan akun anda.")
                         setPositiveButton("Lanjut") { _, _ ->
                             finish()
                         }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: UserRepository) : ViewModel() {
 
-    val quote: LiveData<PagingData<ListStoryItem>> = repository.getStories().cachedIn(viewModelScope)
+    val story: LiveData<PagingData<ListStoryItem>> = repository.getStories().cachedIn(viewModelScope)
     fun getSession(): LiveData<UserModel> {
         return repository.getSession().asLiveData()
     }
