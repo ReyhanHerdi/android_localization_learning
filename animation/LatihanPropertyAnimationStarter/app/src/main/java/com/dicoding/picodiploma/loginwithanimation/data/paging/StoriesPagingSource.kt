@@ -3,10 +3,13 @@ package com.dicoding.picodiploma.loginwithanimation.data.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.dicoding.picodiploma.loginwithanimation.data.api.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
+import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
+import kotlinx.coroutines.flow.first
 
-class StoriesPagingSource(private val apiService: ApiService) : PagingSource<Int, ListStoryItem>() {
+class StoriesPagingSource(private val preference: UserPreference) : PagingSource<Int, ListStoryItem>() {
 
     override fun getRefreshKey(state: PagingState<Int, ListStoryItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -16,9 +19,10 @@ class StoriesPagingSource(private val apiService: ApiService) : PagingSource<Int
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ListStoryItem> {
+        val token = preference.getSession().first().token
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
-            val responseData = apiService.getStories(position, params.loadSize)
+            val responseData = ApiConfig.getApiService(token).getStories(position, params.loadSize)
             val storyList = responseData.listStory as List<ListStoryItem>
 
             LoadResult.Page(

@@ -5,17 +5,20 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
+import com.dicoding.picodiploma.loginwithanimation.data.api.ApiConfig
 import com.dicoding.picodiploma.loginwithanimation.data.api.ApiService
 import com.dicoding.picodiploma.loginwithanimation.data.api.ListStoryItem
 import com.dicoding.picodiploma.loginwithanimation.data.local.entity.RemoteKeysEntity
 import com.dicoding.picodiploma.loginwithanimation.data.local.entity.StoryListEntity
 import com.dicoding.picodiploma.loginwithanimation.data.local.room.StoryListRoomDatabase
+import com.dicoding.picodiploma.loginwithanimation.data.pref.UserPreference
 import com.dicoding.picodiploma.loginwithanimation.utils.AppExecutors
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalPagingApi::class)
 class StoriesRemoteMediator(
     private val database: StoryListRoomDatabase,
-    private val apiService: ApiService,
+    private val preference: UserPreference,
     private val appExecutors: AppExecutors
 ) : RemoteMediator<Int, ListStoryItem>() {
 
@@ -47,8 +50,9 @@ class StoriesRemoteMediator(
         }
 
         try {
-
-            val responseData = apiService.getStories(page, state.config.pageSize)
+            val token = preference.getSession().first().token
+            val responseData = ApiConfig.getApiService(token).getStories(page, state.config.pageSize)
+            // apiService.getStories(page, state.config.pageSize)
             val storyList = responseData.listStory as List<ListStoryItem>
             val storyArray = ArrayList<StoryListEntity>()
 

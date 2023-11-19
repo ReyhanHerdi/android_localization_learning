@@ -144,7 +144,7 @@ class UserRepository private constructor(
             config = PagingConfig(
                 pageSize = 5
             ),
-            remoteMediator = StoriesRemoteMediator(storyListRoomDatabase, apiService, appExecutors),
+            remoteMediator = StoriesRemoteMediator(storyListRoomDatabase, userPreference, appExecutors),
             pagingSourceFactory = {
                 storyListRoomDatabase.storyListDao().getAllStory()
             }
@@ -198,7 +198,7 @@ class UserRepository private constructor(
                                 story?.name.toString(),
                                 story?.description.toString(),
                                 story?.lat.toString().toDouble(),
-                                story?.lat.toString().toDouble()
+                                story?.lon.toString().toDouble()
                             )
 
                         }
